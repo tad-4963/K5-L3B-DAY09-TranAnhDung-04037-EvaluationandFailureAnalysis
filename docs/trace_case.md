@@ -10,18 +10,18 @@ python -m lab9.trace_case --shape fixed --claim C-002 --seed 11   # đối chứ
 
 Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_override`, `error` …), ledger so với nhãn, và lý do của grader Lab 8.
 
-## Mẫu điền (mỗi bạn 1 case, lấy từ trial đang fail trong report)
+## Case đã audit (`seeded_regression C-002@11`)
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `<shape> <claim>@<seed>`, run ID trong report |
-| Triệu chứng | Grader nào fail; reply nói gì so với ledger ghi gì |
-| Bước sai đầu tiên | Số thứ tự event + kind + trích payload (≤1 dòng) |
-| Vì sao là bước *đầu tiên* | Các bước trước đó đúng ra sao (dẫn số event) |
-| Failure mode | Mã FM-xx trong `docs/failure_taxonomy.md` |
-| Đối chứng | Cùng claim@seed trên shape `fixed`: bước đó khác thế nào |
-| Regression test | Tên test + grader/assert nào bắt được; đã thấy fail trên variant lỗi và pass trên `fixed` chưa |
-| Chưa chắc chắn | Điều trace không chứng minh được |
+| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-88f5` |
+| Triệu chứng | `lab8 grader` (`pass_rate`), `db_fact_kept`, `refund_amount_correct` fail (`status resolved != denied`); reply nói `"Dạ, LogiX đã hoàn 20.000đ cho đơn O-202."` trong khi nhãn yêu cầu `denied`, `refund_vnd=0`, `refund_count=0`, còn ledger thực tế ghi `refund_vnd=20000`, `refund_count=1` |
+| Bước sai đầu tiên | Event `3` `model_override` — `{"delay_days": 5}` (dùng số ngày trễ từ ticket thay cho `delay_days: 2` trong DB) |
+| Vì sao là bước *đầu tiên* | Event `1` (`handoff`) giao đúng `principal_scope: "owner_order_only"` và `allowed_tools` hợp lệ; Event `2` (`investigator`) truy vấn `lookup_order` trả đúng bản ghi DB (`O-202`, `status: "delivered"`, `delay_days: 2`). Đến trước event `3`, toàn bộ dữ kiện đều chính xác |
+| Failure mode | `FM-03` (`ticket_trust`) trong `docs/failure_taxonomy.md` |
+| Đối chứng | Trên `fixed C-002@11`: không có event `model_override`; ngay sau event `2` (`investigator`), event `3` (`quote`) dùng `delay_days=2` của DB ra `{"amount_vnd": 0, "reason": "no_entitlement"}`, event `4` (`reply`) trả `status=denied` và `refund_vnd=0` |
+| Regression test | `test_trace_case_c002_seed11_regression` trong `src/tests/test_lab9_regression.py` kiểm tra `DbFactKept` và `RefundAmountCorrect`; đã xác nhận FAIL trên `seeded_regression` và PASS trên `fixed` |
+| Chưa chắc chắn | Trace dùng `MockLLM`; chưa chứng minh được khi thay bằng LLM thật với cách diễn đạt ticket tự nhiên hơn thì prompt/ràng buộc hiện tại có ngăn được việc mô hình tự suy diễn `delay_days` hay không |
 
 ## Quy tắc
 
