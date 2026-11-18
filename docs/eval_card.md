@@ -32,3 +32,20 @@ Card này đi kèm mỗi báo cáo và được dùng lại ở Day 10.
 - **Phạm vi pilot:** Yêu cầu hoàn tiền trễ giao / hư hỏng thuộc một đơn hàng của cùng principal trên tập quy trình nội bộ LogiX-VN
 - **Giới hạn / bằng chứng còn thiếu:** Chạy `MockLLM`, cỡ mẫu 14 item × 5 seed (CI rộng), judge replay trên CSV công khai; chưa đo trên người dùng thật và LLM sản xuất
 - **Khi nào tăng eval-set version:** Khi bổ sung adversarial pack (v2), thêm regression case từ trace production, hoặc thay đổi định nghĩa nhãn/metric
+
+---
+
+## Bổ sung v2 (Advanced / Expert — M5–M7)
+
+- **Run ID / eval set v2 SHA:**
+  - Baseline v2 (`swarm`): `E-swarm-20261118-8e4d` · eval set v2 SHA `8e4db4df2853` (28 item × 5 seed = 140 trial: 14 v1 + 14 adversarial)
+  - `slice_regression`: `E-slice_regression-20261118-8e4d`
+- **Ngưỡng `pass_hat_5` chọn từ phép đo nhiễu A/A (`--aa 66,77,88,99,110`):**
+  - Trên 2 bộ seed (`[11,22,33,44,55]` vs `[66,77,88,99,110]`), `swarm` đạt `pass_hat_5 = 0.8929` ở cả 2 bộ (`delta = +0.0000`), `pass_rate = 0.9786`, `pass_at_5 = 1.0000`.
+  - Chọn sàn `pass_hat_5 >= 0.80` (`blocking: true`) nằm **ngoài** vùng baseline/nhiễu A/A để không báo nhầm trên `fixed`/`honest_refactor` nhưng vẫn chặn được agent chập chờn `flaky_regression`.
+- **Slice gate & lỗi bắt được (`config/metric_spec_v2.yaml`):**
+  - `slice:money_movement/pass_rate` (`min: 0.90`, `no_significant_drop: true`, `blocking: true`): chặn riêng `slice_regression` (`pass_rate` toàn cục vẫn `0.9357 >= 0.85`, nhưng slice `money_movement` tụt mạnh và bị chặn) và hỗ trợ chặn `flaky_regression`, `seeded_regression`.
+  - `slice:denial/pass_rate` (`min: 0.90`, `no_significant_drop: true`, `blocking: true`) & `slice:adversarial/pass_rate` (`min: 0.85`, `no_significant_drop: true`, `blocking: true`): bảo vệ các nhánh từ chối và tấn công `adversarial_v2.json` (`FM-02` → `FM-09` đều có ≥ 3 item).
+- **Mutation scorecard (`lab9.mutation`):** `3/3` regression bị chặn (`seeded_regression`, `slice_regression`, `flaky_regression`), `0` false alarm (`fixed` và `honest_refactor` đều `merge`).
+- **Anti-gaming (`integrity_check` + ratchet):** Chặn `4/4` trap (`evaluator_errors_as_nan`, `dropped_failing_rows`, `cherry_picked_seeds`, `loosened_spec`).
+- **Giới hạn cỡ mẫu (M6):** Một bug hiếm chỉ xảy ra ở **1/3 seed (`rare`)** — ví dụ chỉ kích hoạt khi `seed % 3 == 0` — **không** thể phát hiện ổn định với bộ 5 seed cố định `[11, 22, 33, 44, 55]` (chỉ có 1 seed chia hết cho 3 là `33`, xác suất lọt lưới cao ở các bộ 5 seed khác). Ghi nhận giới hạn này để tăng số seed ở các slice rủi ro cao chứ **không** hạ hoặc chỉnh ngưỡng chỉ để ép gate bắt được bug hiếm trên 5 seed.
