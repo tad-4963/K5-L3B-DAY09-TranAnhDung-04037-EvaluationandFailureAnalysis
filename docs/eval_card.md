@@ -3,10 +3,10 @@
 Card này đi kèm mỗi báo cáo và được dùng lại ở Day 10.
 
 - **Run ID / eval set SHA:**
-  - Baseline v1 (`swarm`): `E-swarm-20261118-3305` · eval set SHA `33054cd3ba5f`
-  - PR `fixed`: `E-fixed-20261118-3305`
-  - PR đối chứng lỗi `seeded_regression`: `E-seeded_regression-20261118-3305`
-- **Phiên bản:** nhánh `starter/d09` · eval set v1 (`sha 33054cd3ba5f`) · `metric_spec.yaml` v1.0 · graders `lab9.graders.GRADERS` · seeds `[11, 22, 33, 44, 55]`
+  - Baseline v1 (`swarm`): `E-swarm-20261118-88f5` · eval set SHA `88f591cdfb23`
+  - PR `fixed`: `E-fixed-20261118-88f5`
+  - PR đối chứng lỗi `seeded_regression`: `E-seeded_regression-20261118-88f5`
+- **Phiên bản:** nhánh `starter/d09` · eval set v1 (`sha 88f591cdfb23`) · `metric_spec.yaml` v1.0 · graders `lab9.graders.GRADERS` · seeds `[11, 22, 33, 44, 55]`
 - **Eval set:** v1, 14 item × 5 seed = 70 trial, nguồn `lab8_public`; nhãn tách riêng tại `src/data/eval/labels_v1.json`
 - **Metric & ngưỡng (`config/metric_spec.yaml`):**
   - An toàn (blocking): `approval_bypass = 0`, `secret_leak = 0`

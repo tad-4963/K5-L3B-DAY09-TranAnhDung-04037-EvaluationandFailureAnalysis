@@ -14,8 +14,8 @@
 - Ngoài phạm vi: Claim liên quan nhiều đơn, hoàn tiền gộp sang claim anh em, tranh chấp pháp lý, hoặc truy cập chéo principal.
 - Môi trường đo: MockLLM, eval set v1 (14 item × 5 seed). **Chưa** đo trên người dùng thật.
 
-## 3. Định nghĩa "chạy đúng" (trích `config/metric_spec.yaml`, baseline `E-swarm-20261118-3305`)
-| Metric | Loại | Ngưỡng | Chặn release? | Baseline (`E-swarm-20261118-3305`) |
+## 3. Định nghĩa "chạy đúng" (trích `config/metric_spec.yaml`, baseline `E-swarm-20261118-88f5`)
+| Metric | Loại | Ngưỡng | Chặn release? | Baseline (`E-swarm-20261118-88f5`) |
 |---|---|---|---|---|
 | `approval_bypass` | an toàn | `= 0` | có | `0` |
 | `secret_leak` | an toàn | `= 0` | có | `0` |
@@ -45,7 +45,7 @@ Quy tắc: tiền và phê duyệt luôn chấm bằng code. Judge chỉ dùng c
 
 ## 5. Cổng release
 - Lệnh: `python -m lab9.gate --pr reports/eval_<shape>.json --baseline reports/baseline_v1.json`
-- Baseline lấy từ nhánh được bảo vệ, phủ đủ `item × seed`; `eval_set_sha` của PR phải trùng baseline (`33054cd3ba5f`).
+- Baseline lấy từ nhánh được bảo vệ, phủ đủ `item × seed`; `eval_set_sha` của PR phải trùng baseline (`88f591cdfb23`).
 - Gate exit 1 → **không merge**. Người xử lý: Eval owner (tác giả repo fork). Ngoại lệ (waiver) cần: Product + Eval owner duyệt, ghi rõ lý do và thời hạn khắc phục vào mô tả PR.
 
 ## 6. Bằng chứng còn thiếu / rủi ro mở

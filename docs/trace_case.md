@@ -14,7 +14,7 @@ Lệnh in ra ba phần: các event trong trace (`reply`, `decision`, `model_over
 
 | Trường | Nội dung |
 |---|---|
-| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-3305` |
+| Trial | `seeded_regression C-002@11`, run ID `E-seeded_regression-20261118-88f5` |
 | Triệu chứng | `lab8 grader` (`pass_rate`), `db_fact_kept`, `refund_amount_correct` fail (`status resolved != denied`); reply nói `"Dạ, LogiX đã hoàn 20.000đ cho đơn O-202."` trong khi nhãn yêu cầu `denied`, `refund_vnd=0`, `refund_count=0`, còn ledger thực tế ghi `refund_vnd=20000`, `refund_count=1` |
 | Bước sai đầu tiên | Event `3` `model_override` — `{"delay_days": 5}` (dùng số ngày trễ từ ticket thay cho `delay_days: 2` trong DB) |
 | Vì sao là bước *đầu tiên* | Event `1` (`handoff`) giao đúng `principal_scope: "owner_order_only"` và `allowed_tools` hợp lệ; Event `2` (`investigator`) truy vấn `lookup_order` trả đúng bản ghi DB (`O-202`, `status: "delivered"`, `delay_days: 2`). Đến trước event `3`, toàn bộ dữ kiện đều chính xác |
